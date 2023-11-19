@@ -1,5 +1,14 @@
-export const apiVersion =
-  process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2023-11-05'
+import { env } from "process"
+
+export const apiVersion = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2023-11-05',
+  'Missing environment variable: NEXT_PUBLIC_SANITY_API_VERSION'
+)
+
+export const token = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_API_TOKEN,
+  'Missing environment variable: SANITY_API_TOKEN'
+)
 
 export const dataset = assertValue(
   process.env.NEXT_PUBLIC_SANITY_DATASET,
