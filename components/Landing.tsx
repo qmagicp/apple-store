@@ -29,7 +29,7 @@ const Landing = () => {
         className="relative hidden h-[450px] w-[450px] transition-all duration-500
       md:flex lg:h-[550px] lg:w-[550px]  "
       >
-        <Image src="/iphone.png" alt="" />
+        <Image src="/iphone.png" alt="" width={450} height={450} />
       </div>
     </section>
   )

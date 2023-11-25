@@ -13,7 +13,12 @@ function Header() {
       <div className="flex justify-center items-center md:w-1/5">
         <Link href={'/'}>
           <div className="relative h-10 w-5 cursor-pointer opacity-75 transition hover:opacity-100 ">
-            <Image src="https://rb.gy/vsvv2o" alt="image-header" />
+            <Image
+              src="https://rb.gy/vsvv2o"
+              width={20}
+              height={40}
+              alt="image-header"
+            />
           </div>
         </Link>
       </div>
