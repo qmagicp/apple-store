@@ -1,11 +1,16 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { ImSearch } from 'react-icons/im'
 import { BiShoppingBag, BiSolidShoppingBag } from 'react-icons/bi'
 import { BiSolidUser } from 'react-icons/bi'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 function Header() {
+  const items = useSelector((state: RootState) => state.cart.items)
   const session = false
 
   return (
@@ -36,7 +41,7 @@ function Header() {
               className="absolute text-white text-[10px] -right-1 -top-1 z-50 flex h-4 w-4 items-center justify-center
           bg-gradient-to-r from-pink-500 to-violet-500 rounded-full "
             >
-              5
+              {items.length}
             </span>
             <BiSolidShoppingBag className="headerIcon" />
           </div>

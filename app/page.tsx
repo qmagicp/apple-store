@@ -1,3 +1,4 @@
+import Cart from '@/components/Cart'
 import Header from '@/components/Header'
 import Landing from '@/components/Landing'
 import Tabs from '@/components/Tabs'
@@ -12,6 +13,7 @@ export default async function Home() {
       <header>
         <Header />
       </header>
+      <Cart />
       <main className="relative h-[200vh] bg-[#E7ECEE]">
         <Landing />
       </main>
