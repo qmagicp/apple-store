@@ -4,10 +4,12 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 export interface CartState {
   items: Product[]
+  loading: boolean
 }
 
 const initialState: CartState = {
   items: [],
+  loading: false,
 }
 
 export const cartSlice = createSlice({
@@ -35,8 +37,11 @@ export const cartSlice = createSlice({
       }
       state.items = newCart
     },
+    setLoading: (state: CartState) => {
+      state.loading !== state.loading
+    },
   },
 })
 
-export const { addToCart, removeFromCart } = cartSlice.actions
+export const { addToCart, removeFromCart, setLoading } = cartSlice.actions
 export default cartSlice.reducer

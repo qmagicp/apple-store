@@ -3,15 +3,20 @@
 import Button from '@/components/Button'
 import CheckoutProduct from '@/components/CheckoutProduct'
 import Header from '@/components/Header'
+import { setLoading } from '@/redux/features/cart/cartSlice'
 import { RootState } from '@/redux/store'
 import { Product } from '@/types'
+import getStripe from '@/utils/getStripe'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { BiChevronDown } from 'react-icons/bi'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import Stripe from 'stripe'
 
 const Checkout = () => {
   const items = useSelector((state: RootState) => state.cart.items)
+  const loading = useSelector((state: RootState) => state.cart.loading)
+  const dispatch = useDispatch()
   const cartTotal = useSelector((state: RootState) =>
     state.cart.items.reduce(
       (total: number, item: Product) => (total += item.price),
@@ -31,6 +36,37 @@ const Checkout = () => {
 
     setGroupedItemsInCart(groupedItems)
   }, [items])
+
+  async function createCheckoutSession() {
+    dispatch(setLoading)
+
+    const checkoutSession: Stripe.Checkout.Session = await fetch(
+      '/api/checkout_sessions',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ items: items }),
+      }
+    )
+
+    //Internal Server Error
+    if ((checkoutSession as any).statusCode === 500) {
+      console.error((checkoutSession as any).message)
+      return
+    }
+
+    // redirect to Checkout
+    const stripe = await getStripe()
+    const { error } = await stripe!.redirectToCheckout({
+      sessionId: checkoutSession.id,
+    })
+
+    console.warn(error.message)
+
+    dispatch(setLoading)
+  }
 
   return (
     <div className="min-h-screen overflow-hidden bg-[#E7ECEE]">
@@ -93,8 +129,32 @@ const Checkout = () => {
                     <h4 className="flex flex-col mb-4 text-xl font-semibold">
                       <span>Pay Monthly</span>
                       <span>with Apple Card</span>
-                      <span></span>
+                      <span>
+                        283.16/mo. at 0% APR{' '}
+                        <sup className="-top-1.5 -left-1.5">0</sup>{' '}
+                      </span>
                     </h4>
+                    <Button title="Check Out with Apple Card Monthly Installments" />
+                    <p className="mt-2 max-w-[240px] text-[13px]">
+                      $0.00 due today, which includes applicable full-price
+                      items, down payments, shipping, and taxes.
+                    </p>
+                  </div>
+                  <div
+                    className="md:order-2 flex flex-col flex-1 rounded-xl justify-center items-center
+                   text-center p-8 py-12 bg-gray-200 space-y-8"
+                  >
+                    <h4 className="mb-4 flex flex-col text-xl font-semibold">
+                      Pay in full
+                      <span>${cartTotal}</span>
+                    </h4>
+                    <Button
+                      noIcon
+                      loading={loading}
+                      title="Check Out"
+                      width="w-full"
+                      onClick={createCheckoutSession}
+                    />
                   </div>
                 </div>
               </div>
